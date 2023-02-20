@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     //push(55);
     // shift();
 
-   show();
-
+    show();
+    getchar();
     return 0;
 }
