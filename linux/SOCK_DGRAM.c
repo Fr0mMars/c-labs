@@ -21,7 +21,7 @@
 #include <arpa/inet.h>
 #include <stdbool.h>
 
-#define BUF_SIZE 256
+#define BUF_SIZE (5 * 1024) + 1
 
 int main(int argc, char *argv[])
 {
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     if (argc != 2)
     {
-        printf("You need to use at least one and only one parameter\n");
+        fprintf(stderr, "usage: %s <port_number>\n", argv[0]);
         return EXIT_FAILURE;
     }
     (void)argv;
@@ -48,8 +48,8 @@ int main(int argc, char *argv[])
     memset((char *)&serv_addr, 0, sizeof(serv_addr));
     port = atoi(argv[1]);
     serv_addr.sin_family = AF_INET;
-    // serv_addr.sin_addr.s_addr = INADDR_LOOPBACK;
-    inet_aton("127.0.0.1", &serv_addr.sin_addr);
+    serv_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    // inet_aton("127.0.0.1", &serv_addr.sin_addr);
     serv_addr.sin_port = htons(port);
 
     if (bind(socket_local, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
@@ -72,6 +72,6 @@ int main(int argc, char *argv[])
         }
         printf("%s\n", buf);
     }
-
+    close(socket_local);
     return EXIT_SUCCESS;
 }
