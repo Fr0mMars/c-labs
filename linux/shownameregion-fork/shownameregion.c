@@ -16,14 +16,6 @@
 #define BUF_SIZE 1024 * 5
 // #define DEBUGMODEMAIN
 
-char *buf_file = NULL;
-
-void sigurg_function()
-{
-    free(buf_file);
-    buf_file = NULL;
-    return EXIT_SUCCESS;
-}
 
 int main(int argc, char *argv[])
 {
@@ -34,7 +26,7 @@ int main(int argc, char *argv[])
     }
     (void)argv;
 
-    buf_file = (char *)malloc(BUF_SIZE);
+    char *buf_file = (char *)malloc(BUF_SIZE);
     if (buf_file != NULL)
     {
 
@@ -90,10 +82,10 @@ int main(int argc, char *argv[])
                 close(tcp_socket);
                 while (true)
                 {
-                    char num[4];
+                    char num [4];
                     char reg_name[256];
-                    memset(num, 0, 4);
-                    memset(reg_name, 0, 4);
+                    memset(num, 0, sizeof(num));
+                    memset(reg_name, 0, sizeof(reg_name));
                     int length = recv(tmp_socket, num, 3, 0);
                     if (-1 == length)
                     {
@@ -128,15 +120,9 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    struct sigaction sigurg_action;
-    memset(&sigurg_action, 0, sizeof(sigurg_action));
-    sigurg_action.sa_handler = sigurg_function;
-    sigaction(SIGINT, &sigurg_action, 0);
 
     free(buf_file);
     buf_file = NULL;
-
-
 
     return EXIT_SUCCESS;
 }
